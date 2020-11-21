@@ -16,7 +16,7 @@ public class MyUserDetails implements UserDetailsService {
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     final User user =new User();
     user.setUsername("username");
-    user.setPassword("pass");
+    user.setPassword("$2a$12$xpEu67Ubt2ljb7WE49/35ekN.06hyGCVzGYnlpWHNlOipb2twjXNq");
 
     if (user == null) {
       throw new UsernameNotFoundException("User '" + username + "' not found");
