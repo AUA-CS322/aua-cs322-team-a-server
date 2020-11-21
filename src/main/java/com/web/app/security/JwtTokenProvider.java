@@ -18,10 +18,6 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    /**
-     * THIS IS NOT A SECURE PRACTICE! For simplicity, we are storing a static key here. Ideally, in a
-     * microservices environment, this key would be kept on a config-server.
-     */
     @Value("${security.jwt.token.secret-key:secret-key}")
     private String secretKey="secret-key";
 
@@ -39,7 +35,6 @@ public class JwtTokenProvider {
     public String createToken(String username) {
 
         Claims claims = Jwts.claims().setSubject(username);
-//    claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -66,7 +61,6 @@ public class JwtTokenProvider {
 //        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
 //            return bearerToken.substring(7);
 //        }
-
         return bearerToken;
     }
 

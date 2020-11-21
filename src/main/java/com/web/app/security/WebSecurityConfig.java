@@ -18,7 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    //  @Autowired
     private JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
     @Override
@@ -37,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web)  {
-//        web.ignoring().antMatchers("/**");
+        web.ignoring().antMatchers("/**");
     }
 
     @Bean
