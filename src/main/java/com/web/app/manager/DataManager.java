@@ -37,6 +37,11 @@ public class DataManager {
         return null;
     }
 
+    public static List<User> getUsers(){
+        datareader();
+        return users;
+    }
+
     public static UserInfoDTO getUserInfo( String username){
         datareader();
         UserInfoDTO userinfo;
@@ -52,10 +57,10 @@ public class DataManager {
 
     public static List<UserInfoDTO> getUsersInfo(){
         datareader();
-        List<UserInfoDTO> usersToString = new ArrayList<>();
+        List<UserInfoDTO> usersinfo = new ArrayList<>();
         users.forEach((user) -> {
-            usersToString.add(getUserInfo(user.getUsername()));
+            usersinfo.add(getUserInfo(user.getUsername()));
         });
-        return usersToString;
+        return usersinfo;
     }
 }
