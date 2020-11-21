@@ -22,9 +22,4 @@ public class UserController {
         return ResponseEntity.ok(userService.signin(loginRequest.getName(), loginRequest.getPassword()));
     }
 
-    @GetMapping
-    public void getUsers(){
-
-        System.out.println("dddd");
-    }
 }
