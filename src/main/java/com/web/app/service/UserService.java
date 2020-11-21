@@ -21,13 +21,16 @@ public class UserService {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    DataManager dataManager;
+
     public String signin(String username, String password)   {
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             return jwtTokenProvider.createToken(username);
      }
-    public static User getUser(String username){
-        return DataManager.getUser(username);
+    public User getUser(String username){
+        return dataManager.getUser(username);
     }
 
 }

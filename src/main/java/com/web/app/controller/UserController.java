@@ -21,5 +21,9 @@ public class UserController {
 
         return ResponseEntity.ok(userService.signin(loginRequest.getName(), loginRequest.getPassword()));
     }
+    @GetMapping("/get")
+    public void getUser(@Validated @RequestBody LoginDTO loginRequest) {
+
+    }
 
 }

@@ -23,7 +23,7 @@ public class JwtTokenProvider {
      * microservices environment, this key would be kept on a config-server.
      */
     @Value("${security.jwt.token.secret-key:secret-key}")
-    private String secretKey;
+    private String secretKey="secret-key";
 
     @Value("${security.jwt.token.expire-length:3600000}")
     private long validityInMilliseconds = 3600000; // 1h
@@ -63,10 +63,11 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
+//        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+//            return bearerToken.substring(7);
+//        }
+
+        return bearerToken;
     }
 
     public boolean validateToken(String token) {
