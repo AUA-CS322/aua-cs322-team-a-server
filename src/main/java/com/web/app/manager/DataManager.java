@@ -16,22 +16,19 @@ import java.util.List;
 
 public class DataManager {
     private static List<User> users = new ArrayList<User>();
-    public static void main(String[] args) {
+    public static void datareader() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         try {
             FileReader list = new FileReader("users.json");
-            try {
-                users = objectMapper.readValue(list, new TypeReference<>(){});
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (FileNotFoundException e) {
+            users = objectMapper.readValue(list, new TypeReference<>(){});
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static User getUser(String username){
+        datareader();
         for (User user : users) {
             if(user.getUsername().equals(username)) {
                     return user;
@@ -41,6 +38,7 @@ public class DataManager {
     }
 
     public static UserInfoDTO getUserInfo( String username){
+        datareader();
         UserInfoDTO userinfo;
         for (User user : users) {
             if(user.getUsername().equals(username)) {
@@ -53,6 +51,7 @@ public class DataManager {
     }
 
     public static List<UserInfoDTO> getUsersInfo(){
+        datareader();
         List<UserInfoDTO> usersToString = new ArrayList<>();
         users.forEach((user) -> {
             usersToString.add(getUserInfo(user.getUsername()));
