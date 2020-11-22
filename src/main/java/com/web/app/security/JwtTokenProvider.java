@@ -1,8 +1,10 @@
 package com.web.app.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -64,9 +66,13 @@ public class JwtTokenProvider {
         return bearerToken;
     }
 
-    public boolean validateToken(String token) {
-        Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-        return true;
+    public boolean validateToken(String token) throws AuthenticationException {
+        try {
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+    } catch (JwtException | IllegalArgumentException e) {
+      throw new AuthenticationException("Expired or invalid JWT token");
     }
+     }
 
 }

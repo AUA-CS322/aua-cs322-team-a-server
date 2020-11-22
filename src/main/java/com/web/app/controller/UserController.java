@@ -9,21 +9,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     @Autowired
     UserService userService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginDTO loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginDTO loginRequest) throws Exception {
 
         userService.signin(loginRequest.getName(), loginRequest.getPassword());
 
         return ResponseEntity.ok(userService.signin(loginRequest.getName(), loginRequest.getPassword()));
     }
-    @GetMapping("/get")
-    public void getUser(@Validated @RequestBody LoginDTO loginRequest) {
 
-    }
 
 }
