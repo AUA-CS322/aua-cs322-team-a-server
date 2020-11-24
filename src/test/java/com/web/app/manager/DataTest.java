@@ -13,8 +13,7 @@ public class DataTest {
     private DataManager dataManager;
 
     @Test
-    public void getUserTest()
-    {
-        Assertions.assertEquals("FName",dataManager.getUser("president").getFirstName());
+    public void getUserTest() {
+        Assertions.assertEquals("FName", dataManager.getUser("president").getFirstName());
     }
 }

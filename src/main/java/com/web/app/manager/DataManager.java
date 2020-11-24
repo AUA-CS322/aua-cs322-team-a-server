@@ -1,11 +1,10 @@
 package com.web.app.manager;
 
-import com.web.app.dto.UserInfoDTO;
-import com.web.app.model.User;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.web.app.service.UserService;
+import com.web.app.dto.UserInfoDTO;
+import com.web.app.model.User;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
