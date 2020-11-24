@@ -13,8 +13,8 @@ public class UserInfoDTO {
     private String location;
     private String phone;
     private String photoUrl;
-    private String Manager_id;
-    private List<String> Relations_id;
+    private String managerId;
+    private List<String> relationIds;
 
     public UserInfoDTO() {
     }
@@ -31,20 +31,20 @@ public class UserInfoDTO {
         this.photoUrl = photoUrl;
     }
 
-    public String getManager_id() {
-        return Manager_id;
+    public String getManagerId() {
+        return managerId;
     }
 
-    public void setManager_id(String manager_id) {
-        Manager_id = manager_id;
+    public void setManagerId(String managerId) {
+        this.managerId = managerId;
     }
 
-    public List<String> getRelations_id() {
-        return Relations_id;
+    public List<String> getRelationIds() {
+        return relationIds;
     }
 
-    public void setRelations_id(List<String> relations_id) {
-        Relations_id = relations_id;
+    public void setRelationIds(List<String> relationIds) {
+        this.relationIds = relationIds;
     }
 
     public String getId() {
