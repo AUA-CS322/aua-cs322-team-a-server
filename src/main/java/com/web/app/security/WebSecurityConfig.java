@@ -1,6 +1,5 @@
 package com.web.app.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,8 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenFilterConfigurer jwtTokenFilterConfigurer;
+
+    public WebSecurityConfig(JwtTokenFilterConfigurer jwtTokenFilterConfigurer) {
+        this.jwtTokenFilterConfigurer = jwtTokenFilterConfigurer;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/signin").permitAll()
                 .anyRequest().authenticated();
 
-        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
+        http.apply(jwtTokenFilterConfigurer);
     }
 
     @Override
