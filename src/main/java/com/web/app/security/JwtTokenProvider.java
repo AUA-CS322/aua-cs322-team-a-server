@@ -22,7 +22,7 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     @Value("${security.jwt.token.secret-key}")
-    private String secretKey = "secret-key";
+    private String secretKey;
 
     @Value("${security.jwt.token.expire-length:3600000}")
     private long validityInMilliseconds = 3600000;
@@ -56,9 +56,6 @@ public class JwtTokenProvider {
     }
 
     public String getUsername(String token) {
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
