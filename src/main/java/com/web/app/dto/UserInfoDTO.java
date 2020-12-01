@@ -1,5 +1,6 @@
 package com.web.app.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserInfoDTO {
@@ -7,6 +8,7 @@ public class UserInfoDTO {
     private String id;
     private String firstName;
     private String lastName;
+    private String username;
     private String position;
     private String email;
     private String department;
@@ -19,7 +21,8 @@ public class UserInfoDTO {
     public UserInfoDTO() {
     }
 
-    public UserInfoDTO(String id, String email, String position, String department, String location, String firstName, String lastName, String phone, String photoUrl) {
+
+    public UserInfoDTO(String id, String username, String email, String position, String department, String location, String firstName, String lastName, String phone, String photoUrl) {
         this.id = id;
         this.email = email;
         this.position = position;
@@ -27,10 +30,19 @@ public class UserInfoDTO {
         this.location = location;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.username = username;
         this.phone = phone;
         this.photoUrl = photoUrl;
+        this.relationIds = new ArrayList<>() {};
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
     public String getManagerId() {
         return managerId;
     }
@@ -42,6 +54,8 @@ public class UserInfoDTO {
     public List<String> getRelationIds() {
         return relationIds;
     }
+
+    public void addRelationIds(String RelationId){ this.relationIds.add(RelationId);};
 
     public void setRelationIds(List<String> relationIds) {
         this.relationIds = relationIds;

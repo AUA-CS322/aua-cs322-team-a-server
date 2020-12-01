@@ -1,41 +1,52 @@
 package com.web.app.manager;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.web.app.dto.UserInfoDTO;
 import com.web.app.model.User;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Objects.isNull;
 
 @Component
 public class DataManager {
 
-    public List<User> getUserList() {
+    public  List<User> getUserList() {
         List<User> users = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         try {
             FileReader list = new FileReader("users.json");
-            try {
-                users = objectMapper.readValue(list, new TypeReference<>() {
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            users = objectMapper.readValue(list, new TypeReference<>() {});
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         return users;
     }
 
-    public User getUser(String username) {
+
+
+    public  User getUser(String username) {
         for (User user : getUserList()) {
             if (user.getUsername().equals(username)) {
                 return user;
@@ -44,23 +55,60 @@ public class DataManager {
         return null;
     }
 
-    public UserInfoDTO getUserInfo(String username) {
-        UserInfoDTO userinfo;
-        for (User user : getUserList()) {
+    public  UserInfoDTO getUserInfoDTObyUsername(String username) {
+        for (UserInfoDTO user : getUsersMap().values()) {
             if (user.getUsername().equals(username)) {
-                userinfo = new UserInfoDTO(user.getId(), user.getEmail(), user.getPosition(), user.getDepartment(),
-                        user.getLocation(), user.getFirstName(), user.getLastName(), user.getPhone(), user.getPhotoUrl());
-                return userinfo;
+                return user;
             }
         }
         return null;
     }
 
-    public List<UserInfoDTO> getUsersInfo() {
-        List<UserInfoDTO> usersToString = new ArrayList<>();
-        getUserList().forEach((user) -> {
-            usersToString.add(getUserInfo(user.getUsername()));
-        });
-        return usersToString;
+    public  UserInfoDTO getUserInfoDTObyKey(String key) {
+        return getUsersMap().get(key);
     }
+
+
+    public HashMap<String,UserInfoDTO> getUsersMap(){
+        UserInfoDTO userinfo;
+        JSONArray relations = null;
+        HashMap<String,UserInfoDTO> usersMap  = new HashMap<String, UserInfoDTO>();
+        JSONParser parser = new JSONParser();
+        //read the relation json into JSONArray
+        try {
+            FileReader mapping = new FileReader("org-tree.json");
+            Object obj = parser.parse(mapping);
+            relations = (JSONArray) obj;
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        for (User user: getUserList()) {
+            userinfo = new UserInfoDTO(user.getId(), user.getUsername(), user.getEmail(), user.getPosition(), user.getDepartment(),
+                    user.getLocation(), user.getFirstName(), user.getLastName(), user.getPhone(), user.getPhotoUrl());
+            usersMap.put(user.getId(),userinfo);
+        }
+        //find the manager and relations
+        for (User user: getUserList()) {
+            for (int i = 0; i < relations.size(); i++) {
+                JSONObject object = (JSONObject) relations.get(i);
+                if (user.getId().equals(object.get("id"))) {
+                    usersMap.get(user.getId()).setManagerId((String) object.get("parent"));
+                    usersMap.get(object.get("parent")).addRelationIds(user.getId());
+                }
+            }
+        }
+
+        return usersMap;
+
+    }
+
 }
