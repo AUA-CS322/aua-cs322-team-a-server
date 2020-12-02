@@ -20,7 +20,5 @@ WORKDIR  /usr/local/
 
 COPY --from=build /usr/src/app/target/app-0.0.1-SNAPSHOT.jar /usr/local/server.jar
 
-EXPOSE 8080
-
 # Run the web socket server on container startup.
-ENTRYPOINT ["java","-jar","/usr/local/server.jar"]
+ENTRYPOINT ["java","-jar","-Dserver.port=${PORT}","/usr/local/server.jar"]
