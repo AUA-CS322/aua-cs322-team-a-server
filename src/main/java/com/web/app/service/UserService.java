@@ -1,10 +1,13 @@
 package com.web.app.service;
 
+import com.web.app.dto.UserInfoDTO;
 import com.web.app.manager.DataManager;
+import com.web.app.manager.SearchManager;
 import com.web.app.model.User;
 import com.web.app.security.JwtTokenProvider;
 import com.web.app.util.SecurityUtils;
 import lombok.extern.log4j.Log4j2;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,13 +32,17 @@ public class UserService {
     private final
     DataManager dataManager;
 
+    private final
+    SearchManager searchmanager;
+
     private final SecurityUtils securityUtils;
 
-    public UserService(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, DataManager dataManager, SecurityUtils securityUtils) {
+    public UserService(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, DataManager dataManager, SecurityUtils securityUtils, SearchManager searchManager) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.dataManager = dataManager;
         this.securityUtils = securityUtils;
+        this.searchmanager = searchManager;
     }
 
     public ResponseEntity signin(String username, String password) {
@@ -69,5 +78,7 @@ public class UserService {
         }
         return user;
     }
+
+    public List<UserInfoDTO> searchUsers(String query) throws IOException, ParseException { return searchmanager.search(query); }
 
 }

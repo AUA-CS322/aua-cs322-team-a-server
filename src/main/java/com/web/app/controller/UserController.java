@@ -3,9 +3,12 @@ package com.web.app.controller;
 import com.web.app.dto.LoginDTO;
 import com.web.app.security.JwtTokenProvider;
 import com.web.app.service.UserService;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/users")
@@ -31,5 +34,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getCurrentUser());
     }
 
+    @GetMapping("/search")
+    public ResponseEntity searchUsers(@RequestParam(name = "query") String query) throws IOException, ParseException { return ResponseEntity.ok(userService.searchUsers(query)); }
 
 }
