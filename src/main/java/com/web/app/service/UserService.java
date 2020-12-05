@@ -1,5 +1,6 @@
 package com.web.app.service;
 
+import com.web.app.dto.UserInfoDTO;
 import com.web.app.manager.DataManager;
 import com.web.app.model.User;
 import com.web.app.security.JwtTokenProvider;
@@ -48,6 +49,9 @@ public class UserService {
 
     public User getUser(String username) {
         return dataManager.getUser(username);
+    }
+    public UserInfoDTO getUserInfo(String username) {
+        return dataManager.getUserInfo(username);
     }
 
     public User getCurrentUser() {

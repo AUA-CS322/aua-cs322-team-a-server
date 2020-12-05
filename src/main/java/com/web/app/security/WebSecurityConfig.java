@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,8 +20,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenFilterConfigurer jwtTokenFilterConfigurer;
 
-    public WebSecurityConfig(JwtTokenFilterConfigurer jwtTokenFilterConfigurer) {
+    private final JwtTokenFilter jwtTokenFilter;
+
+    public WebSecurityConfig(JwtTokenFilterConfigurer jwtTokenFilterConfigurer, JwtTokenFilter jwtTokenFilter) {
         this.jwtTokenFilterConfigurer = jwtTokenFilterConfigurer;
+
+        this.jwtTokenFilter = jwtTokenFilter;
     }
 
     @Override
@@ -29,6 +34,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
                 .antMatchers("/users/signin").permitAll()

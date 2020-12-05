@@ -47,32 +47,71 @@ public class DataManager {
 
 
     public  User getUser(String username) {
+//        for (User user : getUserList()) {
+//            if (user.getUsername().equals(username)) {
+//                return user;
+//            }
+//        }
+        for(User user: getUsersMap().values()){
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public UserInfoDTO getUserInfo(String username) {
+//        for (User user : getUserList()) {
+//            if (user.getUsername().equals(username)) {
+//                return user;
+//            }
+//        }
+        UserInfoDTO userinfo;
+        for (User user : getUsersMap().values()) {
+            if (user.getUsername().equals(username)) {
+                userinfo = new UserInfoDTO(user);
+                if(user.getManager()!=null) {
+                    userinfo.setManager(new UserInfoDTO(user.getManager()));
+                }
+                if(!user.getRelations().isEmpty()){
+                    for(User rel: user.getRelations()){
+                        userinfo.getRelations().add(new UserInfoDTO(rel));
+                    }
+                }
+                return userinfo;
+            }
+        }
+         return null;
+    }
+
+    public  User getUserById(String id) {
         for (User user : getUserList()) {
-            if (user.getUsername().equals(username)) {
+            if (user.getId().equals(id)) {
                 return user;
             }
         }
         return null;
     }
 
-    public  UserInfoDTO getUserInfoDTObyUsername(String username) {
-        for (UserInfoDTO user : getUsersMap().values()) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
-        }
-        return null;
-    }
 
-    public  UserInfoDTO getUserInfoDTObyKey(String key) {
-        return getUsersMap().get(key);
-    }
+//    public  UserInfoDTO getUserInfoDTObyUsername(String username) {
+//        for (UserInfoDTO user : getUsersMap().values()) {
+//            if (user.getUsername().equals(username)) {
+//                return user;
+//            }
+//        }
+//        return null;
+//    }
+
+//    public  UserInfoDTO getUserInfoDTObyKey(String key) {
+//        return getUsersMap().get(key);
+//    }
 
 
-    public HashMap<String,UserInfoDTO> getUsersMap(){
+    public HashMap<String,User> getUsersMap(){
         UserInfoDTO userinfo;
         JSONArray relations = null;
-        HashMap<String,UserInfoDTO> usersMap  = new HashMap<String, UserInfoDTO>();
+        HashMap<String,User> usersMap  = new HashMap<String, User>();
         JSONParser parser = new JSONParser();
         //read the relation json into JSONArray
         try {
@@ -92,17 +131,18 @@ public class DataManager {
             e.printStackTrace();
         }
         for (User user: getUserList()) {
-            userinfo = new UserInfoDTO(user.getId(), user.getUsername(), user.getEmail(), user.getPosition(), user.getDepartment(),
-                    user.getLocation(), user.getFirstName(), user.getLastName(), user.getPhone(), user.getPhotoUrl());
-            usersMap.put(user.getId(),userinfo);
+//            userinfo = new UserInfoDTO(user.getId(), user.getUsername(), user.getEmail(), user.getPosition(), user.getDepartment(),
+//                    user.getLocation(), user.getFirstName(), user.getLastName(), user.getPhone(), user.getPhotoUrl());
+            usersMap.put(user.getId(),user);
         }
         //find the manager and relations
         for (User user: getUserList()) {
             for (int i = 0; i < relations.size(); i++) {
                 JSONObject object = (JSONObject) relations.get(i);
                 if (user.getId().equals(object.get("id"))) {
-                    usersMap.get(user.getId()).setManagerId((String) object.get("parent"));
-                    usersMap.get(object.get("parent")).addRelationIds(user.getId());
+                    usersMap.get(user.getId()).setManager(getUserById((String)object.get("parent")));
+
+                    usersMap.get(object.get("parent")).getRelations().add(user);
                 }
             }
         }

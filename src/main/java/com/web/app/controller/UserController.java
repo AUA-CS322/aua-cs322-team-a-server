@@ -3,6 +3,7 @@ package com.web.app.controller;
 import com.web.app.dto.LoginDTO;
 import com.web.app.security.JwtTokenProvider;
 import com.web.app.service.UserService;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity getUser() {
+    public ResponseEntity getUser(@RequestParam("username") String username) {
         return ResponseEntity.ok(userService.getCurrentUser());
     }
 
