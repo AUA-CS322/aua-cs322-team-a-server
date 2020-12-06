@@ -1,6 +1,6 @@
 package com.web.app.dto;
 
- import com.web.app.model.User;
+import com.web.app.model.User;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -77,14 +77,12 @@ public class UserInfoDTO {
         return relationIds;
     }
 
-    public void addRelationIds(String RelationId) {
-        this.relationIds.add(RelationId);
-    }
-
-    ;
-
     public void setRelationIds(List<String> relationIds) {
         this.relationIds = relationIds;
+    }
+
+    public void addRelationIds(String RelationId) {
+        this.relationIds.add(RelationId);
     }
 
     public String getId() {
