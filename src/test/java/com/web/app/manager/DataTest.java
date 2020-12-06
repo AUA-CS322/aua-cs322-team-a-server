@@ -13,8 +13,13 @@ public class DataTest {
     private DataManager dataManager;
 
     @Test
+<<<<<<< HEAD
     public void getUserTest()
     {
         Assertions.assertEquals("FName",dataManager.getUser("president").getFirstName());
+=======
+    public void getUserTest() {
+        Assertions.assertEquals("FName", dataManager.getUser("president").getFirstName());
+>>>>>>> Search
     }
 }
