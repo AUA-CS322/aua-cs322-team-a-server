@@ -1,7 +1,9 @@
-package com.web.app.security;
+package com.web.app.config;
 
+import com.web.app.security.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,12 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtTokenFilterConfigurer jwtTokenFilterConfigurer;
-
     private final JwtTokenFilter jwtTokenFilter;
 
-    public WebSecurityConfig(JwtTokenFilterConfigurer jwtTokenFilterConfigurer, JwtTokenFilter jwtTokenFilter) {
-        this.jwtTokenFilterConfigurer = jwtTokenFilterConfigurer;
+    public WebSecurityConfig(JwtTokenFilter jwtTokenFilter) {
 
         this.jwtTokenFilter = jwtTokenFilter;
     }
@@ -40,13 +39,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/users/signin").permitAll()
                 .anyRequest().authenticated();
-
-        http.apply(jwtTokenFilterConfigurer);
     }
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/**");
+        web.ignoring().antMatchers("/**")
+                .antMatchers(HttpMethod.OPTIONS, "/**");
     }
 
     @Bean
