@@ -22,11 +22,14 @@ public class SearchTest {
 
     @Spy
     @InjectMocks
+    private DataManager dataManager;
+
+    @Spy
+    @InjectMocks
     private LuceneIndexWriter writer = new LuceneIndexWriter("/indexDir","/users.json");
 
     @Test
     public void searchTest() throws IOException, ParseException {
-        searchManager.dataManager = new DataManager();
         List<UserInfoDTO> users = searchManager.search("FName");
         Assertions.assertEquals(5, users.size());
     }
@@ -38,8 +41,7 @@ public class SearchTest {
     }
 
     @Test
-    public void jsonParser()
-    {
+    public void jsonParser() throws IOException {
         JSONArray array = writer.parseJSONFile();
         Assertions.assertEquals(20, array.size());
     }

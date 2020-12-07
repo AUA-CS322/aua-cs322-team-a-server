@@ -15,39 +15,40 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class SearchManager {
 
-    @Autowired
-    public DataManager dataManager;
+    public final DataManager dataManager;
 
     private final String INDEX_PATH = "indexDir";
-    private final String JSON_FILE_PATH = "/users.json";
+    private final String JSON_FILE_PATH = "data/users.json";
     private final int QUERY_SIZE = 5;
+    private IndexSearcher indexSearcher;
+    private IndexReader indexReader;
 
-    public SearchManager() {
-        createIndex();
+    public SearchManager(DataManager dataManager) throws IOException {
+        createAndOpenIndex();
+        this.dataManager = dataManager;
     }
 
-    private void createIndex() {
+    private void createAndOpenIndex() throws IOException {
         LuceneIndexWriter lw = new LuceneIndexWriter(INDEX_PATH, JSON_FILE_PATH);
         lw.createIndex();
-
+        Directory indexDirectory = FSDirectory.open(Paths.get(INDEX_PATH));
+        indexReader = DirectoryReader.open(indexDirectory);
+        indexSearcher = new IndexSearcher(indexReader);
     }
 
-    public List<UserInfoDTO> search(String query) throws IOException, ParseException {
+    public List<UserInfoDTO> search(String query) throws ParseException, IOException {
         List<UserInfoDTO> userList = new ArrayList<>(QUERY_SIZE);
-        Directory indexDirectory = FSDirectory.open(Paths.get(INDEX_PATH));
-        IndexReader indexReader = DirectoryReader.open(indexDirectory);
-        final IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+
         QueryParser qp = new QueryParser(LuceneConstants.CONTENTS, new StandardAnalyzer());
         Query q = qp.parse("firstName:" + query + "*" + " OR lastName:" + query + "*" + " OR position" + query + "*" + " OR department" + query + "*" + " OR location" + query + "*");
         TopDocs topDocs = indexSearcher.search(q, QUERY_SIZE);

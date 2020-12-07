@@ -1,9 +1,11 @@
 package com.web.app.controller;
 
 import com.web.app.dto.LoginDTO;
+import com.web.app.manager.SearchManager;
 import com.web.app.security.JwtTokenProvider;
 import com.web.app.security.MyUserDetailsService;
 import lombok.extern.log4j.Log4j2;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @Log4j2
@@ -22,13 +25,14 @@ public class UserController {
     private final MyUserDetailsService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final SearchManager searchManager;
 
-    public UserController(MyUserDetailsService userService, JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider1) {
+    public UserController(MyUserDetailsService userService, JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider1, SearchManager searchManager) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider1;
+        this.searchManager = searchManager;
     }
-
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginDTO loginRequest) {
@@ -67,6 +71,8 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity searchUsers(@RequestParam(name = "query") String query) throws IOException, ParseException { return ResponseEntity.ok(userService.searchUsers(query)); }
+    public ResponseEntity searchUsers(@RequestParam(name = "query") String query) throws IOException, ParseException {
+        return ResponseEntity.ok(searchManager.search(query));
+    }
 
 }

@@ -12,6 +12,7 @@ import org.apache.lucene.util.Version;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -33,7 +34,7 @@ public class LuceneIndexWriter {
         this.jsonFilePath = jsonFilePath;
     }
 
-    public void createIndex(){
+    public void createIndex() throws IOException {
         JSONArray jsonObjects = parseJSONFile();
         openIndex();
         addDocuments(jsonObjects);
@@ -41,14 +42,14 @@ public class LuceneIndexWriter {
     }
 
 
-    public JSONArray parseJSONFile(){
+    public JSONArray parseJSONFile() throws IOException {
 
         //Get the JSON file, in this case is in ~/resources/test.json
-        InputStream jsonFile =  getClass().getResourceAsStream(jsonFilePath);
-        Reader readerJson = new InputStreamReader(jsonFile);
+        InputStreamReader userDataFileReader = new InputStreamReader(
+                new ClassPathResource("data/users.json").getInputStream());
 
         //Parse the json file using simple-json library
-        Object fileObjects= JSONValue.parse(readerJson);
+        Object fileObjects= JSONValue.parse(userDataFileReader);
         JSONArray arrayObjects=(JSONArray)fileObjects;
 
         return arrayObjects;
