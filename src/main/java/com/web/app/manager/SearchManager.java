@@ -29,7 +29,7 @@ public class SearchManager {
     @Autowired
     public DataManager dataManager;
 
-    private final String INDEX_PATH = "/indexDir";
+    private final String INDEX_PATH = "indexDir";
     private final String JSON_FILE_PATH = "/users.json";
     private final int QUERY_SIZE = 5;
 
