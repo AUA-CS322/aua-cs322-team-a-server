@@ -53,7 +53,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return dataManager.getUserInfo(username);
     }
 
-    public User getCurrentUser() {
+    public UserInfoDTO getCurrentUser() {
         final Optional<String> currentUserLogin = securityUtils.getCurrentUserLogin();
 
         if (currentUserLogin.isEmpty()) {
@@ -64,7 +64,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         log.debug("Current user login: {}", userLogin);
 
-        User user = dataManager.getUser(userLogin);
+        UserInfoDTO user = dataManager.getUserInfo(userLogin);
 
         if (user == null) {
             log.error("User \"{}\" not found", userLogin);

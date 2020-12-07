@@ -46,7 +46,7 @@ public class SearchManager {
         indexSearcher = new IndexSearcher(indexReader);
     }
 
-    public List<UserInfoDTO> search(String query) throws ParseException, IOException {
+    public List<UserInfoDTO> search(String query) throws IOException, ParseException {
         List<UserInfoDTO> userList = new ArrayList<>(QUERY_SIZE);
 
         QueryParser qp = new QueryParser(LuceneConstants.CONTENTS, new StandardAnalyzer());
