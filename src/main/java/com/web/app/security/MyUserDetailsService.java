@@ -49,7 +49,6 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
 
-
     public UserInfoDTO getUserInfo(String username) {
         return dataManager.getUserInfo(username);
     }
@@ -74,12 +73,4 @@ public class MyUserDetailsService implements UserDetailsService {
         return user;
     }
 
-    /*    public ResponseEntity signin(String username, String password) {
-     *//* try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            return new ResponseEntity(jwtTokenProvider.createToken(username), HttpStatus.ACCEPTED);
-        } catch (AuthenticationException e) {
-            *//*
-        return ResponseEntity.badRequest().body(false);
-    }*/
 }
