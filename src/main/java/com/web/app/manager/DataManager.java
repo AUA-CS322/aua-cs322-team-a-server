@@ -1,16 +1,23 @@
 package com.web.app.manager;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.web.app.dto.RelationInfoDTO;
 import com.web.app.dto.UserInfoDTO;
 import com.web.app.model.User;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,20 +30,24 @@ public class DataManager {
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         try {
             FileReader list = new FileReader("users.json");
-            try {
-                users = objectMapper.readValue(list, new TypeReference<>() {
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            users = objectMapper.readValue(list, new TypeReference<>() {
+            });
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         return users;
     }
 
+
     public User getUser(String username) {
-        for (User user : getUserList()) {
+        for (User user : getUsersMap().values()) {
             if (user.getUsername().equals(username)) {
                 return user;
             }
@@ -46,21 +57,70 @@ public class DataManager {
 
     public UserInfoDTO getUserInfo(String username) {
         UserInfoDTO userinfo;
-        for (User user : getUserList()) {
+        for (User user : getUsersMap().values()) {
             if (user.getUsername().equals(username)) {
-                userinfo = new UserInfoDTO(user.getId(), user.getEmail(), user.getPosition(), user.getDepartment(),
-                        user.getLocation(), user.getFirstName(), user.getLastName(), user.getPhone(), user.getPhotoUrl());
+                userinfo = new UserInfoDTO(user);
+                if (user.getManager() != null) {
+                    userinfo.setManager(new RelationInfoDTO(user.getManager()));
+                }
+                if (!user.getRelations().isEmpty()) {
+                    for (User rel : user.getRelations()) {
+                        userinfo.getRelations().add(new RelationInfoDTO(rel));
+                    }
+                }
                 return userinfo;
             }
         }
         return null;
     }
 
-    public List<UserInfoDTO> getUsersInfo() {
-        List<UserInfoDTO> usersToString = new ArrayList<>();
-        getUserList().forEach((user) -> {
-            usersToString.add(getUserInfo(user.getUsername()));
-        });
-        return usersToString;
+    public User getUserById(String id) {
+        for (User user : getUserList()) {
+            if (user.getId().equals(id)) {
+                return user;
+            }
+        }
+        return null;
     }
+
+
+    public HashMap<String, User> getUsersMap() {
+        JSONArray relations = null;
+        HashMap<String, User> usersMap = new HashMap<String, User>();
+        JSONParser parser = new JSONParser();
+        //read the relation json into JSONArray
+        try {
+            FileReader mapping = new FileReader("org-tree.json");
+            Object obj = parser.parse(mapping);
+            relations = (JSONArray) obj;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        for (User user : getUserList()) {
+            usersMap.put(user.getId(), user);
+        }
+        //find the manager and relations
+        for (User user : getUserList()) {
+            for (int i = 0; i < relations.size(); i++) {
+                JSONObject object = (JSONObject) relations.get(i);
+                if (user.getId().equals(object.get("id"))) {
+                    usersMap.get(user.getId()).setManager(getUserById((String) object.get("parent")));
+
+                    usersMap.get(object.get("parent")).getRelations().add(user);
+                }
+            }
+        }
+
+        return usersMap;
+
+    }
+
 }
