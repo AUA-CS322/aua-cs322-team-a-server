@@ -18,29 +18,14 @@ public class UserInfoDTO {
     private String location;
     private String phone;
     private String photoUrl;
-    private String managerId;
 
-    private UserInfoDTO manager;
-    private List<UserInfoDTO> relations;
+    private RelationInfoDTO manager;
+    private List<RelationInfoDTO> relations;
     private List<String> relationIds;
 
     public UserInfoDTO() {
     }
 
-
-    //    public UserInfoDTO(String id, String username, String email, String position, String department, String location, String firstName, String lastName, String phone, String photoUrl) {
-//        this.id = id;
-//        this.email = email;
-//        this.position = position;
-//        this.department = department;
-//        this.location = location;
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//        this.username = username;
-//        this.phone = phone;
-//        this.photoUrl = photoUrl;
-//        this.relationIds = new ArrayList<>() {};
-//    }
     public UserInfoDTO(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
@@ -63,14 +48,6 @@ public class UserInfoDTO {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(String managerId) {
-        this.managerId = managerId;
     }
 
     public List<String> getRelationIds() {
@@ -158,19 +135,20 @@ public class UserInfoDTO {
     }
 
 
-    public UserInfoDTO getManager() {
-        return manager;
-    }
 
-    public void setManager(UserInfoDTO manager) {
-        this.manager = manager;
-    }
-
-    public List<UserInfoDTO> getRelations() {
+    public List<RelationInfoDTO> getRelations() {
         return relations;
     }
 
-    public void setRelations(List<UserInfoDTO> relations) {
+    public void setRelations(List<RelationInfoDTO> relations) {
         this.relations = relations;
+    }
+
+    public RelationInfoDTO getManager() {
+        return manager;
+    }
+
+    public void setManager(RelationInfoDTO manager) {
+        this.manager = manager;
     }
 }

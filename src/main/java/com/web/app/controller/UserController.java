@@ -41,8 +41,13 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity getUser(@RequestParam("username") String username) {
+    public ResponseEntity getCurrentUser() {
         return ResponseEntity.ok(userService.getCurrentUser());
+    }
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity getUser(@PathVariable(name="username") String username) {
+        return ResponseEntity.ok(userService.getUserInfo(username));
     }
 
     private void authenticate(String username, String password) {

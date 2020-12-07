@@ -48,6 +48,8 @@ public class MyUserDetailsService implements UserDetailsService {
         return dataManager.getUser(username);
     }
 
+
+
     public UserInfoDTO getUserInfo(String username) {
         return dataManager.getUserInfo(username);
     }

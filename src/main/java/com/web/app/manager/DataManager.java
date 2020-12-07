@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.web.app.dto.RelationInfoDTO;
 import com.web.app.dto.UserInfoDTO;
 import com.web.app.model.User;
 import org.json.simple.JSONArray;
@@ -46,11 +47,6 @@ public class DataManager {
 
 
     public User getUser(String username) {
-//        for (User user : getUserList()) {
-//            if (user.getUsername().equals(username)) {
-//                return user;
-//            }
-//        }
         for (User user : getUsersMap().values()) {
             if (user.getUsername().equals(username)) {
                 return user;
@@ -60,21 +56,16 @@ public class DataManager {
     }
 
     public UserInfoDTO getUserInfo(String username) {
-//        for (User user : getUserList()) {
-//            if (user.getUsername().equals(username)) {
-//                return user;
-//            }
-//        }
         UserInfoDTO userinfo;
         for (User user : getUsersMap().values()) {
             if (user.getUsername().equals(username)) {
                 userinfo = new UserInfoDTO(user);
                 if (user.getManager() != null) {
-                    userinfo.setManager(new UserInfoDTO(user.getManager()));
+                    userinfo.setManager(new RelationInfoDTO(user.getManager()));
                 }
                 if (!user.getRelations().isEmpty()) {
                     for (User rel : user.getRelations()) {
-                        userinfo.getRelations().add(new UserInfoDTO(rel));
+                        userinfo.getRelations().add(new RelationInfoDTO(rel));
                     }
                 }
                 return userinfo;
@@ -93,22 +84,7 @@ public class DataManager {
     }
 
 
-//    public  UserInfoDTO getUserInfoDTObyUsername(String username) {
-//        for (UserInfoDTO user : getUsersMap().values()) {
-//            if (user.getUsername().equals(username)) {
-//                return user;
-//            }
-//        }
-//        return null;
-//    }
-
-//    public  UserInfoDTO getUserInfoDTObyKey(String key) {
-//        return getUsersMap().get(key);
-//    }
-
-
     public HashMap<String, User> getUsersMap() {
-        UserInfoDTO userinfo;
         JSONArray relations = null;
         HashMap<String, User> usersMap = new HashMap<String, User>();
         JSONParser parser = new JSONParser();
@@ -129,8 +105,6 @@ public class DataManager {
             e.printStackTrace();
         }
         for (User user : getUserList()) {
-//            userinfo = new UserInfoDTO(user.getId(), user.getUsername(), user.getEmail(), user.getPosition(), user.getDepartment(),
-//                    user.getLocation(), user.getFirstName(), user.getLastName(), user.getPhone(), user.getPhotoUrl());
             usersMap.put(user.getId(), user);
         }
         //find the manager and relations
