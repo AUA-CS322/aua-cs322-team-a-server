@@ -1,5 +1,8 @@
 package com.web.app.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class User {
     private String id;
     private String email;
@@ -13,7 +16,11 @@ public class User {
     private String phone;
     private String photoUrl;
 
+    private User manager;
+    private List<User> relations;
+
     public User() {
+        relations = new LinkedList<>();
     }
 
     public User(String id, String email, String username, String password, String position, String department, String location, String firstName, String lastName, String phone, String photoUrl) {
@@ -28,6 +35,7 @@ public class User {
         this.lastName = lastName;
         this.phone = phone;
         this.photoUrl = photoUrl;
+        relations = new LinkedList<>();
     }
 
     public String getId() {
@@ -118,4 +126,19 @@ public class User {
         this.photoUrl = photoUrl;
     }
 
+    public User getManager() {
+        return manager;
+    }
+
+    public void setManager(User manager) {
+        this.manager = manager;
+    }
+
+    public List<User> getRelations() {
+        return relations;
+    }
+
+    public void setRelations(List<User> relations) {
+        this.relations = relations;
+    }
 }
