@@ -12,12 +12,16 @@ public class RelationInfoDTO {
     private String firstName;
     private String lastName;
     private String photoUrl;
+    private String position;
+    private String username;
 
     public RelationInfoDTO(User user) {
         this.id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.photoUrl = user.getPhotoUrl();
+        this.position = user.getPosition();
+        this.username=user.getUsername();
     }
 
 }

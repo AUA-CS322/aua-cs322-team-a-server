@@ -1,11 +1,13 @@
 package com.web.app.controller;
 
 import com.web.app.dto.LoginDTO;
+import com.web.app.dto.LoginResponse;
 import com.web.app.manager.SearchManager;
 import com.web.app.security.JwtTokenProvider;
 import com.web.app.security.MyUserDetailsService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,30 +29,30 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final SearchManager searchManager;
 
-    public UserController(MyUserDetailsService userService, JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider1, SearchManager searchManager) {
+    public UserController(MyUserDetailsService userService, JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager, SearchManager searchManager) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider1;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.searchManager = searchManager;
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginDTO loginRequest) {
+    @PostMapping(value = "/signin",produces = MediaType.APPLICATION_JSON_VALUE)
+    public LoginResponse authenticateUser(@Validated @RequestBody LoginDTO loginRequest) {
 
         String username = loginRequest.getUsername();
         authenticate(username, loginRequest.getPassword());
 
         String token = jwtTokenProvider.createToken(username);
 
-        return ResponseEntity.ok(token);
+        return new LoginResponse(token);
     }
 
-    @GetMapping("/user")
+    @GetMapping(value = "/user",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getCurrentUser() {
         return ResponseEntity.ok(userService.getCurrentUser());
     }
 
-    @GetMapping("/user/{username}")
+    @GetMapping(value ="/user/{username}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getUser(@PathVariable(name = "username") String username) {
         return ResponseEntity.ok(userService.getUserInfo(username));
     }
@@ -70,7 +72,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/search")
+    @GetMapping(value ="/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity searchUsers(@RequestParam(name = "query") String query) throws IOException, ParseException {
         return ResponseEntity.ok(searchManager.search(query));
     }
