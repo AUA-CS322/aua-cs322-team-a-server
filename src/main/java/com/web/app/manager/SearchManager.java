@@ -50,7 +50,7 @@ public class SearchManager {
         List<UserInfoDTO> userList = new ArrayList<>(QUERY_SIZE);
 
         QueryParser qp = new QueryParser(LuceneConstants.CONTENTS, new StandardAnalyzer());
-        Query q = qp.parse("firstName:" + query + "*" + " OR lastName:" + query + "*" + " OR position" + query + "*" + " OR department" + query + "*" + " OR location" + query + "*");
+        Query q = qp.parse("firstName:" + query + "*" + " OR lastName:" + query + "*" + " OR position:" + query + "*" + " OR department:" + query + "*" + " OR location:" + query + "*");
         TopDocs topDocs = indexSearcher.search(q, QUERY_SIZE);
 
         final ScoreDoc[] scoreDocs = topDocs.scoreDocs;
